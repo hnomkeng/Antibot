@@ -1,38 +1,69 @@
 ### Anti-Antibot ###
 
 automacro AntiBotAlert {
-console /.*antibot.*/i
-	exclusive 1
-   call {
-	do eval Utils::Win32::playSound('C:\mp3\alarm.wav')
+    console /.*antibot.*/i
+    exclusive 1
+    call {
+        do eval Utils::Win32::playSound('C:\mp3\alarm.wav')
 	log >> LAST MESSAGE WAS: $.lastLogMsg
-   }
+    }
 }
 
-macro gef10{
-	do conf lockMap gef_fild14
-	log in gef 10
-	
+automacro AntiBotResponse {
+    console /[a-z]*#[a-z]*/i
+    exclusive 1
+    call {
+        $word = "$.lastLogMsg"
+        $new  = subStr($word)
+        $param = $new
+        $letter = findMissing("$param")
+        pause 2
+        do talk text $letter
+        pause 3
+        do talk resp 0
+    }
 }
 
-
-macro gef14{
-	
-	do conf lockMap gef_fild10
-	log in gef 14
-	
+sub subStr{
+    my ($string) = @_;
+    my $startIndex = index($string, ":") + 1;
+    my $endIndex = length($string);
+    my $subString = substr($string, $startIndex+1, $endIndex);
+    return $subString;
 }
+
+sub findMissing {
+    my ($string) = @_;
+    my $temp = $string;
+    my $index = index($string, "#");
+    
+    my @data = ("doctor", "moneda", "cabeza", "diente", "soporte", "bronce", "femenino", "frase", 
+    		"madera", "hombre", "telefono", "desactivar", "diccionario", "audifono", "madre",
+    		"teclado", "cerebro", "mujer", "emperium", "plata", "ayuda" );
+    my @letters = ("a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k",
+  		   "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "y", "z");
+
+    foreach (@letters){
+    $string =~ s/#/$_/;
+    if ($string ~~ @data){
+      return $_;
+    }
+    $string = $temp;
+  }
+  return 0;
+}
+
 
 
 
 automacro map {
-console /Francisco Franco : map/
-call {
-pause 2
-log Map is $.map
-pause 2
-release all
-}
+    console /Francisco Franco : map/
+    call {
+        pause 2
+        log Map is $.map
+        pause 2
+        release all
+    }
 }
 
 
@@ -104,47 +135,4 @@ automacro dinero {
    }
 }
 
-
-automacro AntiBotResponse {
-console /[a-z]*#[a-z]*/i
-	exclusive 1
-   call {
-	$word = "$.lastLogMsg"
-	$new  = subStr($word)
-	$param = $new
-  $letter = findMissing("$param")
-  pause 2
-  do talk text $letter
-  pause 3
-  do talk resp 0
-   }
-}
-
-sub subStr{
-	my ($string) = @_;
- 	my $startIndex = index($string, ":") + 1;
-	my $endIndex = length($string);
-	my $subString = substr($string, $startIndex+1, $endIndex);
-	return $subString;
-}
-
-sub findMissing {
-	my ($string) = @_;
-  my $temp = $string;
-  my $index = index($string, "#");
-  my @data = ("doctor", "moneda", "cabeza", "diente", "soporte", "bronce", "femenino", "frase", "madera", "hombre", "telefono",
-                "desactivar", "diccionario", "audifono", "madre", "teclado", "cerebro", "mujer", "emperium", "plata", "ayuda" );
-  my @letters = ("a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k",
-  "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "y", "z");
-
-  foreach (@letters){
-    $string =~ s/#/$_/;
-    if ($string ~~ @data){
-      return $_;
-    }
-    $string = $temp;
-  }
-
-  return 0;
-}
 
