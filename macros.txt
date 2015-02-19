@@ -1,1 +1,150 @@
-test
+### Anti-Antibot ###
+
+automacro AntiBotAlert {
+console /.*antibot.*/i
+	exclusive 1
+   call {
+	do eval Utils::Win32::playSound('C:\mp3\alarm.wav')
+	log >> LAST MESSAGE WAS: $.lastLogMsg
+   }
+}
+
+macro gef10{
+	do conf lockMap gef_fild14
+	log in gef 10
+	
+}
+
+
+macro gef14{
+	
+	do conf lockMap gef_fild10
+	log in gef 14
+	
+}
+
+
+
+automacro map {
+console /Francisco Franco : map/
+call {
+pause 2
+log Map is $.map
+pause 2
+release all
+}
+}
+
+
+automacro Storage {
+   weight > 99%
+   run-once 1
+   call {
+      pause 1
+      do move stop
+      log >> SHIT NIGGA, MY BAG'S NOW FULL OF GOLD & STUFF
+      pause 1
+      log >> WAIT A LIL, LEMME MOVE THESE THINGS TO MAH STORAGE, YO...
+      pause 1
+      do c @storage
+      pause 1
+      do storage add @inventory (Gold)
+      pause 2
+      do storage close
+      log >> YEA, DAT FEELZ BETTER BRAH.
+      release all
+   }
+}
+
+
+automacro sellGold {
+   weight > 88%
+   run-once 1
+   call {
+      pause 1
+      do conf attackAuto 0
+      do conf route_randomWalk 0
+      do move 233 356 #move from lou fild to lou city
+      do move 256 122 #move to the seller npc
+      $id = @inventory(Gold)
+      do talknpc 256 123 s 
+      do sell $id
+      do sell done
+      do move 218 20 #go back to lou fild
+      do conf attackAuto 2
+      do conf route_randomWalk 1
+      release all        
+   }
+}
+
+
+macro foundMVP {
+do eval Utils::Win32::playSound ('C:\mp3\siren.wav')
+#do eval Win32::MsgBox(q{Found MVP!!!},MB_SYSTEMMODAL,q{MVP ALERT!!!} )
+release all
+}
+
+
+#automacro someonePMedYou2 {
+#   pm /(.*)/
+#   call {
+#   do eval Utils::Win32::playSound('C:\mp3\can.wav')
+#   #do eval Win32::MsgBox(q{SOMEONE TALKED TO #YOU!!},MB_SYSTEMMODAL,q{GM ALERT!!!} )
+#	release all
+#   }
+#}
+
+
+automacro dinero {
+   console /.*tellme.*/i
+   call {
+	$zeny = @eval($.zeny/1000000)
+	do c $zeny
+	release all
+   }
+}
+
+
+automacro AntiBotResponse {
+console /[a-z]*#[a-z]*/i
+	exclusive 1
+   call {
+	$word = "$.lastLogMsg"
+	$new  = subStr($word)
+	$param = $new
+  $letter = findMissing("$param")
+  pause 2
+  do talk text $letter
+  pause 3
+  do talk resp 0
+   }
+}
+
+sub subStr{
+	my ($string) = @_;
+ 	my $startIndex = index($string, ":") + 1;
+	my $endIndex = length($string);
+	my $subString = substr($string, $startIndex+1, $endIndex);
+	return $subString;
+}
+
+sub findMissing {
+	my ($string) = @_;
+  my $temp = $string;
+  my $index = index($string, "#");
+  my @data = ("doctor", "moneda", "cabeza", "diente", "soporte", "bronce", "femenino", "frase", "madera", "hombre", "telefono",
+                "desactivar", "diccionario", "audifono", "madre", "teclado", "cerebro", "mujer", "emperium", "plata", "ayuda" );
+  my @letters = ("a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k",
+  "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "y", "z");
+
+  foreach (@letters){
+    $string =~ s/#/$_/;
+    if ($string ~~ @data){
+      return $_;
+    }
+    $string = $temp;
+  }
+
+  return 0;
+}
+
