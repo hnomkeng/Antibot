@@ -57,7 +57,7 @@ sub findMissing {
 
 
 automacro map {
-    console /Francisco Franco : map/
+    console /Fran : map/
     call {
         pause 2
         log Map is $.map
